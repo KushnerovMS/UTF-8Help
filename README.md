@@ -1,4 +1,4 @@
-# UTF-8Help - library for working with UTF-8 coding
+# UTF-8Help. Library for working with UTF-8 coding
 
 ### Functions:
 
@@ -6,7 +6,7 @@
 `int UNICODE(const char*, int*)` returns UNICODE of symbol</br>
 `int SymbCodeAdd(char* , int*)` help to in/decreasing code of symbol coding as UTF-8
 
-For detaled description look documentation in html/
+For detaled description look documentation in [html](https://github.com/KushnerovMS/UTF-8Help/tree/main/html)
 
 ### Library making
 
