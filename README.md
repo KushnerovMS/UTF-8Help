@@ -1,4 +1,4 @@
-# UTF-8Help -- library for working with UTF-8 coding
+# UTF-8Help - library for working with UTF-8 coding
 
 ### Functions:
 
