@@ -1,6 +1,5 @@
 CC=g++
-SANFLAGS=-fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,leak,nonnull-attribute,null,object-size,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
-
+SANFLAGS = -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,leak,nonnull-attribute,null,object-size,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 CFLAGS=-D _DEBUG -ggdb3 -std=c++2a -O0 -Wall -Wextra -Weffc++ -Waggressive-loop-optimizations   \
 	   -Wc++14-compat -Wmissing-declarations -Wcast-align -Wcast-qual -Wchar-subscripts			\
 	   -Wconditionally-supported -Wconversion -Wctor-dtor-privacy -Wempty-body -Wfloat-equal 	\
@@ -14,29 +13,42 @@ CFLAGS=-D _DEBUG -ggdb3 -std=c++2a -O0 -Wall -Wextra -Weffc++ -Waggressive-loop-
 	   -Wno-old-style-cast -Wno-varargs -Wstack-protector -fcheck-new -fsized-deallocation 		\
 	   -fstack-protector -fstrict-overflow -flto-odr-type-merging -fno-omit-frame-pointer 		\
 	   -fPIE $(SANFLAGS) -pie -Wstack-usage=8192
-
-SOURCES=example.cpp UTF8Help.cpp
+SOURCES=main.cpp UTF8Help.cpp	
 OBJDIR =./.obj
-OBJECTS=$(patsubst %.cpp, $(OBJDIR)/%.o, $(SOURCES))
+OBJECTS=$(addprefix $(OBJDIR)/, $(SOURCES:.cpp=.o))
 EXECUTABLE=UTF8Help
 EXEDIR=./bin
+
+COMAPANY=kms
+
+LIBDIR=/lib
+HEADERDIR=/usr/include
 
 
 $(EXECUTABLE): $(OBJECTS) $(EXEDIR)
 	$(CC) $(SANFLAGS) $(OBJECTS) -o $(EXEDIR)/$@
 
-
 $(OBJECTS) : $(OBJDIR)/%.o : %.cpp $(OBJDIR) 
 	$(CC) -c $(CFLAGS) $< -o $@
 
-lib$(EXECUTABLE).a : $(filter-out $(OBJDIR)/example.o, $(OBJECTS))
-	ar r lib$(EXECUTABLE).a $(filter-out $(OBJDIR)/example.o, $(OBJECTS))
+
+lib$(EXECUTABLE).a : $(OBJECTS:$(OBJDIR)/main.o= )
+	ar r lib$(EXECUTABLE).a $(OBJECTS:$(OBJDIR)/main.o= )
+
+libInstall : lib$(EXECUTABLE).a $(LIBDIR)/$(COMAPANY)/ $(HEADERDIR)/$(COMAPANY)/
+	sudo cp -f lib$(EXECUTABLE).a $(LIBDIR)/$(COMAPANY)/
+	sudo cp -f $(EXECUTABLE).h 	 $(HEADERDIR)/$(COMAPANY)/
+
+$(LIBDIR)/$(COMAPANY)/ :
+	mkdir $(LIBDIR)/$(COMAPANY)/
+
+$(HEADERDIR)/$(COMAPANY)/ :
+	mkdir $(HEADERDIR)/$(COMAPANY)/
+
 
 $(EXEDIR) :
 	mkdir $(EXEDIR)
 
 $(OBJDIR) :
 	mkdir $(OBJDIR)
-
-clear:
-	rm -r -d $(OBJDIR)
+	

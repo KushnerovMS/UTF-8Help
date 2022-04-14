@@ -23,7 +23,7 @@ int SymbSize (const char* str)
     return 0;
 }
 
-int UNICODE (const char* str, int* skip)
+inline int UNICODE (const char* str, int* skip)
 {
     if ( ( *str >> 7 ) == 0)
     {
@@ -43,21 +43,21 @@ int UNICODE (const char* str, int* skip)
     {
         if (skip) *skip = 2;
 
-        return ((str[0] & 0xF) << 6) + (str[1] & 0x3F);
+        return ((str[0] & 0x1F) << 6) | (str[1] & 0x3F);
     }
 
     if ( ( (*str >> 4) & 1 ) == 0)
     {
         if (skip) *skip = 3;
 
-        return ((str[0] & 0x7) << 12) + ((str[1] & 0x3F) << 6) + (str[2] & 0x3F);
+        return ((str[0] & 0xF) << 12) + ((str[1] & 0x3F) << 6) + (str[2] & 0x3F);
     }
 
     if ( ( (*str >> 3) & 1 ) == 0)
     {
         if (skip) *skip = 4;
 
-        return ((str[0] & 0x5) << 18) + ((str[1] & 0x3F) << 12) + ((str[1] & 0x3F) << 6) + (str[2] & 0x3F);
+        return ((str[0] & 0x7) << 18) + ((str[1] & 0x3F) << 12) + ((str[1] & 0x3F) << 6) + (str[2] & 0x3F);
     }
 
     return 0;
@@ -104,3 +104,25 @@ int SymbCodeAdd (char* str, int addition)
     return size;
 }
 
+void StrToLower (char* str)
+{
+    int skip = 0;
+    for (size_t i = 0; str[i] != '\0'; i += skip)
+    {
+        int cunicode = 0;
+
+        cunicode = UNICODE (str + i, &skip);
+        if (cunicode >= UNICODE_A && cunicode <= UNICODE_JA)
+            SymbCodeAdd (str + i, UNICODE_a - UNICODE_A);
+
+        else if (cunicode == UNICODE_JO)
+            SymbCodeAdd (str + i, UNICODE_jo - UNICODE_JO);
+
+        else if (cunicode == UNICODE_JO)
+            SymbCodeAdd (str + i, UNICODE_jo - UNICODE_JO);
+
+        else if (cunicode >= 'A' && cunicode <= 'Z')
+            SymbCodeAdd (str + i, 'a' - 'A');
+    }
+    
+}

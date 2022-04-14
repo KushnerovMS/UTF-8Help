@@ -14,6 +14,14 @@
  *                  
  */
 
+const int UNICODE_A  = 1040;
+const int UNICODE_a  = 1072;
+const int UNICODE_JA = 1071;
+const int UNICODE_ja = 1103;
+const int UNICODE_JO = 1025;
+const int UNICODE_jo = 1105;
+
+
 /**
  * @brief           Scan next UTF-8 symbol
  *
@@ -35,7 +43,7 @@ int     SymbSize    (const char* str);
  *
  * @see             SymbSize
  */
-int     UNICODE     (const char* str, int* skip = nullptr);
+inline int UNICODE  (const char* str, int* skip = nullptr);
 
 /**
  * @brief           Add value to symbol UNICODE
@@ -51,5 +59,16 @@ int     UNICODE     (const char* str, int* skip = nullptr);
  *                  leads to undefined behaviour
  */
 int     SymbCodeAdd (char* str, int addition);
+
+/**
+ * @brief           String to lower case
+ *
+ * @param           str     string that should be converted
+ *
+ * This function convert symbols in UTF-8 string to them lower case.
+ *
+ * @note            Work only with english and russian symbols
+ */
+void    StrToLower  (char* str);
 
 #endif
